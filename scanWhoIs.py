@@ -126,11 +126,6 @@ def showWhois(whoisRecord):
     print("----- Registrar Info -----")
     print("\tName: " + whoisRecord["registrarName"])
     print("\tWhois Server: " + whoisRecord["registryData"]["whoisServer"])
-    print("\tStatus: ")
-    
-    status = whoisRecord["status"]
-    for eachStatus in status.split(" "):
-        print("\t\t- " + eachStatus)
 
     # Mostramos las fechas importantes
     print("\n----- Important Dates -----")
@@ -147,46 +142,28 @@ def showWhois(whoisRecord):
     print("\n----- Registrant Contact Information -----")
     print("\tName: " + whoisRecord["registrant"]["name"])
     print("\tOrganization: " + whoisRecord["registrant"]["organization"])
-
-    for address in whoisRecord["registrant"]["street1"].split("\n"):
-        print("\tAddress: " + address)
     
     print("\tCity: " + whoisRecord["registrant"]["city"])
     print("\tState / Province: " + whoisRecord["registrant"]["state"])
-    print("\tPostal Code: " + whoisRecord["registrant"]["postalCode"])
     print("\tCountry: " + whoisRecord["registrant"]["countryCode"])
-    print("\tPhone: " + whoisRecord["registrant"]["telephone"])
-    print("\tFax: " + whoisRecord["registrant"]["fax"])
 
     # Mostramos la información del Administrativo
     print("\n----- Administrative Contact Information -----")
     print("\tName: " + whoisRecord["administrativeContact"]["name"])
     print("\tOrganization: " + whoisRecord["administrativeContact"]["organization"])
     
-    for address in whoisRecord["administrativeContact"]["street1"].split("\n"):
-        print("\tAddress: " + address)
-    
     print("\tCity: " + whoisRecord["administrativeContact"]["city"])
     print("\tState / Province: " + whoisRecord["administrativeContact"]["state"])
-    print("\tPostal Code: " + whoisRecord["administrativeContact"]["postalCode"])
     print("\tCountry: " + whoisRecord["administrativeContact"]["countryCode"])
-    print("\tPhone: " + whoisRecord["administrativeContact"]["telephone"])
-    print("\tFax: " + whoisRecord["administrativeContact"]["fax"])
 
     # Mostramos la información del Técnico
     print("\n----- Technical Contact Information -----")
     print("\tName: " + whoisRecord["technicalContact"]["name"])
     print("\tOrganization: " + whoisRecord["technicalContact"]["organization"])
     
-    for address in whoisRecord["technicalContact"]["street1"].split("\n"):
-        print("\tAddress: " + address)
-    
     print("\tCity: " + whoisRecord["technicalContact"]["city"])
     print("\tState / Province: " + whoisRecord["technicalContact"]["state"])
-    print("\tPostal Code: " + whoisRecord["technicalContact"]["postalCode"])
     print("\tCountry: " + whoisRecord["technicalContact"]["countryCode"])
-    print("\tPhone: " + whoisRecord["technicalContact"]["telephone"])
-    print("\tFax: " + whoisRecord["technicalContact"]["fax"])
 
 """
     Nombre: Show NS
@@ -319,7 +296,7 @@ def getHaveibeenpwnedBreaches(mx):
 """
 def makePing(domain):
 
-    print("\n========== PING de" + domain + " ==========")
+    print("\n========== PING de " + domain + " ==========")
 
     # Realizamos el ping
     proc = subprocess.Popen(["/usr/bin/ping -c 1 %s" % domain, ""], stdout=subprocess.PIPE, shell=True)
@@ -353,9 +330,20 @@ def makePortScan(ipAddress):
     proc = subprocess.Popen(["sudo /usr/bin/nmap -sS -n -Pn --open --min-rate 5000 --top-ports 10 %s" % ipAddress, ""], stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
 
-    # Mostramos los resultados
+    # Descodificamos los resultados y los separamos por lineas en una lista
     out = out.decode("utf-8")
-    print(out)
+    outSplitted = out.split("\n")
+    showByIndex = 0
+
+    # Buscamos en que línea empieza la información util y nos guardamos su índice
+    for line in outSplitted:
+        if "PORT" in line:
+            break
+        showByIndex += 1
+    
+    # Mostramos desde la información util hasta el final -1 para mostrar únicamente lo que nos sirve
+    for i in range(showByIndex, len(outSplitted) - 2):
+        print(outSplitted[i])
 
 # ========== Ejecución del Main ==========
 main()
