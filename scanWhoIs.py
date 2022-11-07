@@ -9,8 +9,6 @@
 
 # ========== Inclusión de bibliotecas ==========
 import requests
-import re
-import sys
 import subprocess
 
 # ========== Declaraciones Globales ==========
